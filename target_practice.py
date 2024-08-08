@@ -3,6 +3,7 @@ import sys
 
 from settings import Settings
 from target import Target
+from shooter import Shooter
 
 class TargetPracticeGame:
     def __init__(self) -> None:
@@ -12,6 +13,7 @@ class TargetPracticeGame:
         pygame.display.set_caption("Target Practice")
         self.clock = pygame.time.Clock()
         self.target = Target(self)
+        self.shooter = Shooter(self)
 
     def run_game(self):
         """Start game"""
@@ -26,6 +28,7 @@ class TargetPracticeGame:
     def _render_elements(self):
         self.screen.fill(self.settings.bg_color)
         self.target.blitme()
+        self.shooter.blitme()
         pygame.display.flip()
         self.clock.tick(60)
 
