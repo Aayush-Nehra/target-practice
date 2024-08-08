@@ -17,15 +17,22 @@ class TargetPracticeGame:
         """Start game"""
         while True:
             # Watch for keyboard and mouse events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+            self._check_events()
 
-            self.screen.fill(self.settings.bg_color)
-            self.target.blitme()
+            self.target.update()
 
-            pygame.display.flip()
-            self.clock.tick(60)
+            self._render_elements()
+            
+    def _render_elements(self):
+        self.screen.fill(self.settings.bg_color)
+        self.target.blitme()
+        pygame.display.flip()
+        self.clock.tick(60)
+
+    def _check_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
 
 if __name__ == '__main__':
     targetPracticeGame = TargetPracticeGame()
