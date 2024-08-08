@@ -1,4 +1,5 @@
 import pygame
+from utility import _get_scaled_image
 
 class Target:
     def __init__(self, target_practice) -> None:
@@ -6,7 +7,7 @@ class Target:
         self.screen = target_practice.screen
         self.screen_rect = self.screen.get_rect()
 
-        self.image = self._get_image() 
+        self.image = _get_scaled_image("images/target_dummy.png", 3) 
         self.rect = self.image.get_rect()
         self.rect.topright = (self.screen.get_width(), 0)
 
@@ -14,7 +15,7 @@ class Target:
         self.target_direction = 1
 
     def blitme(self):
-        self.screen.blit(self.trimmed_image, self.rect)
+        self.screen.blit(self.image, self.rect)
 
     def update(self):
         self._update_direction()
@@ -26,10 +27,4 @@ class Target:
         elif self.rect.y >= self.screen_rect.height - self.rect.height:
             self.target_direction = -1
 
-    def _get_image(self):
-        self.image = pygame.transform.scale_by(
-            pygame.image.load("images/target_dummy.png").convert_alpha(),3) 
-        self.rect = self.image.get_bounding_rect()
-        self.trimmed_image = pygame.Surface(self.rect.size, pygame.SRCALPHA)
-        self.trimmed_image.blit(self.image,(0,0), self.rect)
-        return self.trimmed_image
+   
