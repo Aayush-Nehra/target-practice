@@ -20,7 +20,13 @@ class Shooter:
     def update(self):
         if self.move_down and self.rect.bottom <= self.settings.screen_height:
             self.y += self.settings.shooter_speed
+            #boundry condition
+            if self.y > self.settings.screen_height - self.rect.height:
+                self.y = self.settings.screen_height - self.rect.height
         if self.move_up and self.rect.top >= 0 :
             self.y -= self.settings.shooter_speed
+            #boundry condition
+            if self.y < self.rect.height:
+                self.y = 0
         self.rect.y = self.y
 
