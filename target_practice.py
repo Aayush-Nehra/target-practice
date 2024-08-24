@@ -22,6 +22,7 @@ class TargetPracticeGame:
             self._check_events()
 
             self.target.update()
+            self.shooter.update()
 
             self._render_elements()
             
@@ -36,6 +37,22 @@ class TargetPracticeGame:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                self._check_keydown_events(event)
+            elif event.type == pygame.KEYUP:
+                self._check_keyup_events(event)
+
+    def _check_keyup_events(self, event):
+        if event.key == pygame.K_DOWN:
+            self.shooter.move_down = False
+        elif event.key == pygame.K_UP:
+            self.shooter.move_up = False
+
+    def _check_keydown_events(self, event):
+        if event.key == pygame.K_DOWN:
+            self.shooter.move_down = True
+        elif event.key == pygame.K_UP:
+            self.shooter.move_up = True
 
 if __name__ == '__main__':
     targetPracticeGame = TargetPracticeGame()

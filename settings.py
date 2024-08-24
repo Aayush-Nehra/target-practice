@@ -7,3 +7,6 @@ class Settings:
 
         #Target Settings
         self.target_speed = 5
+
+        #Shooter Settings
+        self.shooter_speed = 5
