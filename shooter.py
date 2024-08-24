@@ -26,7 +26,7 @@ class Shooter:
         if self.move_up and self.rect.top >= 0 :
             self.y -= self.settings.shooter_speed
             #boundry condition
-            if self.y < self.rect.height:
+            if self.y < 0:
                 self.y = 0
         self.rect.y = self.y
 
