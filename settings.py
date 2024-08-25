@@ -10,3 +10,9 @@ class Settings:
 
         #Shooter Settings
         self.shooter_speed = 1
+
+        #Bullet Settings
+        self.bullet_speed = 2.0
+        self.bullet_width = 20
+        self.bullet_height = 5
+        self.bullet_color = (255, 0, 0)

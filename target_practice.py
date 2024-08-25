@@ -4,6 +4,7 @@ import sys
 from settings import Settings
 from target import Target
 from shooter import Shooter
+from bullet import Bullet
 
 class TargetPracticeGame:
     def __init__(self) -> None:
@@ -14,6 +15,10 @@ class TargetPracticeGame:
         self.clock = pygame.time.Clock()
         self.target = Target(self)
         self.shooter = Shooter(self)
+        self.bullets = pygame.sprite.Group()
+        #Keeps tracks of the bullets that did not hit the target
+        self.bullets_missed = 0
+        self.target_hit = 0
 
     def run_game(self):
         """Start game"""
@@ -23,13 +28,38 @@ class TargetPracticeGame:
 
             self.target.update()
             self.shooter.update()
+            self._update_bullets()
 
             self._render_elements()
+
+    def _update_bullets(self):
+        self.bullets.update()
+        #Get rid of bullets that have disappeared from the screen and
+        #inrement the missed bullets
+        for bullet in self.bullets.copy():
+            if bullet.rect.right > self.settings.screen_width:
+                self.bullets.remove(bullet)
+                self.bullets_missed += 1
+                print(self.bullets_missed)
+
+        for bullet in self.bullets.copy():
+            if bullet.rect.colliderect(self.target.rect):
+                self.bullets.remove(bullet)
+                self.target_hit += 1
+                print("Target Hit: ", self.target_hit)
+
+
+        #Check if bullets have hit the target
+        #If they have then delete the bullet
+
+
             
     def _render_elements(self):
         self.screen.fill(self.settings.bg_color)
         self.target.blitme()
         self.shooter.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet() 
         pygame.display.flip()
         self.clock.tick(60)
 
@@ -53,6 +83,15 @@ class TargetPracticeGame:
             self.shooter.move_down = True
         elif event.key == pygame.K_UP:
             self.shooter.move_up = True
+        elif event.key == pygame.K_q:
+            sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
+
+    def _fire_bullet(self):
+        """Create a new bullet and add it to bullet group"""
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)
 
 if __name__ == '__main__':
     targetPracticeGame = TargetPracticeGame()
