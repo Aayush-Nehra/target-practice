@@ -5,6 +5,7 @@ from settings import Settings
 from target import Target
 from shooter import Shooter
 from bullet import Bullet
+from button import Button
 
 class TargetPracticeGame:
     def __init__(self) -> None:
@@ -20,15 +21,21 @@ class TargetPracticeGame:
         self.bullets_missed = 0
         self.target_hit = 0
 
+        #Start game in inactive state
+        self.game_active = False
+        
+        #Make play button
+        self.play_button = Button(self, "Play")
+
     def run_game(self):
         """Start game"""
         while True:
             # Watch for keyboard and mouse events
             self._check_events()
-
-            self.target.update()
-            self.shooter.update()
-            self._update_bullets()
+            if self.game_active:
+                self.target.update()
+                self.shooter.update()
+                self._update_bullets()
 
             self._render_elements()
 
@@ -58,6 +65,8 @@ class TargetPracticeGame:
         self.screen.fill(self.settings.bg_color)
         self.target.blitme()
         self.shooter.blitme()
+        if not self.game_active:
+            self.play_button.draw_button()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet() 
         pygame.display.flip()
@@ -71,6 +80,14 @@ class TargetPracticeGame:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_mousebuttondown_events(mouse_pos)
+
+    def _check_mousebuttondown_events(self, mouse_pos):
+        """Start a new game when player clicks play"""
+        if self.play_button.rect.collidepoint(mouse_pos):
+            self.game_active = True
 
     def _check_keyup_events(self, event):
         if event.key == pygame.K_DOWN:
@@ -87,6 +104,8 @@ class TargetPracticeGame:
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
+        elif event.key == pygame.K_p:
+            self.game_active = True
 
     def _fire_bullet(self):
         """Create a new bullet and add it to bullet group"""
