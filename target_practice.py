@@ -49,26 +49,25 @@ class TargetPracticeGame:
                 self.target_missed += 1
                 print(self.target_missed)
 
+        if self.target_missed == 3:
+            self.game_active = False
+
+        #Check if bullets have hit the target
+        #If they have then delete the bullet
         for bullet in self.bullets.copy():
             if bullet.rect.colliderect(self.target.rect):
                 self.bullets.remove(bullet)
                 self.target_hit += 1
                 print("Target Hit: ", self.target_hit)
-
-
-        #Check if bullets have hit the target
-        #If they have then delete the bullet
-
-
             
     def _render_elements(self):
         self.screen.fill(self.settings.bg_color)
         self.target.blitme()
         self.shooter.blitme()
-        if not self.game_active:
-            self.play_button.draw_button()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet() 
+        if not self.game_active:
+            self.play_button.draw_button()
         pygame.display.flip()
         self.clock.tick(60)
 
@@ -87,10 +86,16 @@ class TargetPracticeGame:
     def _check_play_button(self, mouse_pos):
         """Start a new game when player clicks play"""
         if self.play_button.rect.collidepoint(mouse_pos):
-            self.target_hit = 0
-            self.target_missed = 0
-            self.game_active = True
-            
+            self.reset_game_options()
+
+    def reset_game_options(self):
+        self.target_hit = 0
+        self.target_missed = 0
+        self.game_active = True
+
+        #Get rid of any remaining bullets
+        self.bullets.empty()
+
     def _check_keyup_events(self, event):
         if event.key == pygame.K_DOWN:
             self.shooter.move_down = False
@@ -107,7 +112,7 @@ class TargetPracticeGame:
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
         elif event.key == pygame.K_p:
-            self.game_active = True
+            self.reset_game_options()
 
     def _fire_bullet(self):
         """Create a new bullet and add it to bullet group"""
