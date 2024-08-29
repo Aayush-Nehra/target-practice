@@ -18,7 +18,7 @@ class TargetPracticeGame:
         self.shooter = Shooter(self)
         self.bullets = pygame.sprite.Group()
         #Keeps tracks of the bullets that did not hit the target
-        self.bullets_missed = 0
+        self.target_missed = 0
         self.target_hit = 0
 
         #Start game in inactive state
@@ -46,8 +46,8 @@ class TargetPracticeGame:
         for bullet in self.bullets.copy():
             if bullet.rect.right > self.settings.screen_width:
                 self.bullets.remove(bullet)
-                self.bullets_missed += 1
-                print(self.bullets_missed)
+                self.target_missed += 1
+                print(self.target_missed)
 
         for bullet in self.bullets.copy():
             if bullet.rect.colliderect(self.target.rect):
@@ -82,13 +82,15 @@ class TargetPracticeGame:
                 self._check_keyup_events(event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                self._check_mousebuttondown_events(mouse_pos)
+                self._check_play_button(mouse_pos)
 
-    def _check_mousebuttondown_events(self, mouse_pos):
+    def _check_play_button(self, mouse_pos):
         """Start a new game when player clicks play"""
         if self.play_button.rect.collidepoint(mouse_pos):
+            self.target_hit = 0
+            self.target_missed = 0
             self.game_active = True
-
+            
     def _check_keyup_events(self, event):
         if event.key == pygame.K_DOWN:
             self.shooter.move_down = False
