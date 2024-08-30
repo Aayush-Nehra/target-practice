@@ -33,11 +33,16 @@ class TargetPracticeGame:
             # Watch for keyboard and mouse events
             self._check_events()
             if self.game_active:
-                self.target.update()
-                self.shooter.update()
-                self._update_bullets()
+                self.update_game_elements()
 
-            self._render_elements()
+            self._render_game_elements()
+
+    def update_game_elements(self):
+        self.check_game_over()
+        self.target.update()
+        self.shooter.update()
+        self._update_bullets()
+        self.update_score_and_level()
 
     def _update_bullets(self):
         self.bullets.update()
@@ -49,18 +54,24 @@ class TargetPracticeGame:
                 self.target_missed += 1
                 print(self.target_missed)
 
-        if self.target_missed == 3:
+    def check_game_over(self):
+        if self.target_missed >= self.settings.max_missed:
             self.game_active = False
 
-        #Check if bullets have hit the target
-        #If they have then delete the bullet
+    def update_score_and_level(self):
+        """Check if bullet hit the target, delete bullet if target is hit"""
         for bullet in self.bullets.copy():
             if bullet.rect.colliderect(self.target.rect):
                 self.bullets.remove(bullet)
                 self.target_hit += 1
-                print("Target Hit: ", self.target_hit)
+                self.increase_level()
+
+    def increase_level(self):
+        if self.target_hit!= 0 and self.target_hit % 5 == 0:
+            self.settings.increase_game_speed()
+            #print("speed increased")
             
-    def _render_elements(self):
+    def _render_game_elements(self):
         self.screen.fill(self.settings.bg_color)
         self.target.blitme()
         self.shooter.blitme()
@@ -87,6 +98,7 @@ class TargetPracticeGame:
         """Start a new game when player clicks play"""
         if self.play_button.rect.collidepoint(mouse_pos):
             self.reset_game_options()
+            self.settings.initialize_dynamic_settings()
 
     def reset_game_options(self):
         self.target_hit = 0
@@ -116,8 +128,9 @@ class TargetPracticeGame:
 
     def _fire_bullet(self):
         """Create a new bullet and add it to bullet group"""
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
+        if self.game_active == True:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
 
 if __name__ == '__main__':
     targetPracticeGame = TargetPracticeGame()
